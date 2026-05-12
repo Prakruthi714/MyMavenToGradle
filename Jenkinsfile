@@ -3,14 +3,13 @@ pipeline {
 
     tools {
         jdk 'JDK11'
-        gradle 'Gradle'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                git branch: 'master',
+                git branch: 'main',
                     url: 'https://github.com/Prakruthi714/MyMavenToGradle.git'
             }
         }
@@ -23,19 +22,19 @@ pipeline {
 
         stage('Clean Project') {
             steps {
-                sh 'gradle clean'
+                sh './gradlew clean'
             }
         }
 
         stage('Build Project') {
             steps {
-                sh 'gradle build'
+                sh './gradlew build'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'gradle test'
+                sh './gradlew test'
             }
         }
 
@@ -48,6 +47,7 @@ pipeline {
     }
 
     post {
+
         always {
             junit allowEmptyResults: true,
                   testResults: 'build/test-results/test/*.xml'
