@@ -9,31 +9,55 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main',
+                git branch: 'master',
                     url: 'https://github.com/Prakruthi714/MyMavenToGradle.git'
             }
         }
 
-        stage('Permission') {
+        stage('Give Permission') {
             steps {
                 sh 'chmod +x gradlew'
             }
         }
 
-        stage('Build') {
+        stage('Clean Project') {
             steps {
-                sh './gradlew clean build'
+                sh './gradlew clean'
+            }
+        }
+
+        stage('Build Project') {
+            steps {
+                sh './gradlew build'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh './gradlew test'
+            }
+        }
+
+        stage('Archive JAR') {
+            steps {
+                archiveArtifacts artifacts: 'build/libs/*.jar',
+                                 fingerprint: true
             }
         }
     }
 
     post {
+
         success {
             echo 'Build Successful'
         }
 
         failure {
             echo 'Build Failed'
+        }
+
+        always {
+            junit 'build/test-results/test/*.xml'
         }
     }
 }
