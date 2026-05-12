@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        jdk 'JDK17'
+        jdk 'JDK'
     }
 
     stages {
@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/Prakruthi714/YOUR-REPO.git'
+                    url: 'https://github.com/Prakruthi714/MyMavenToGradle.git'
             }
         }
 
@@ -20,37 +20,14 @@ pipeline {
             }
         }
 
-        stage('Clean') {
-            steps {
-                sh './gradlew clean'
-            }
-        }
-
         stage('Build') {
             steps {
-                sh './gradlew build'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh './gradlew test'
-            }
-        }
-
-        stage('Archive') {
-            steps {
-                archiveArtifacts artifacts: 'build/libs/*.jar',
-                                 fingerprint: true
+                sh './gradlew clean build'
             }
         }
     }
 
     post {
-        always {
-            junit 'build/test-results/test/*.xml'
-        }
-
         success {
             echo 'Build Successful'
         }
