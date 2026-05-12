@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     tools {
-        jdk 'JDK'
+        jdk 'JDK17'
+        gradle 'Gradle'
     }
 
     stages {
@@ -22,19 +23,19 @@ pipeline {
 
         stage('Clean Project') {
             steps {
-                sh './gradlew clean'
+                sh 'gradle clean'
             }
         }
 
         stage('Build Project') {
             steps {
-                sh './gradlew build'
+                sh 'gradle build'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh './gradlew test'
+                sh 'gradle test'
             }
         }
 
@@ -47,6 +48,10 @@ pipeline {
     }
 
     post {
+        always {
+            junit allowEmptyResults: true,
+                  testResults: 'build/test-results/test/*.xml'
+        }
 
         success {
             echo 'Build Successful'
@@ -54,10 +59,6 @@ pipeline {
 
         failure {
             echo 'Build Failed'
-        }
-
-        always {
-            junit 'build/test-results/test/*.xml'
         }
     }
 }
